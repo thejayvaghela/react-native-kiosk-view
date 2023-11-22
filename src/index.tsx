@@ -17,6 +17,12 @@ const KioskView = NativeModules.KioskView
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return KioskView.multiply(a, b);
-}
+const fullscreen = () => KioskView.fullscreen();
+
+const exitFullscreen = () => KioskView.exitFullscreen();
+
+const moveToFront = () => KioskView.moveToFront();
+
+const Kiosk = { fullscreen, exitFullscreen, moveToFront };
+
+export default Kiosk;

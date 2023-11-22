@@ -1,18 +1,18 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-kiosk-view';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Kiosk from 'react-native-kiosk-view';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <TouchableOpacity onPress={() => Kiosk.fullscreen()}>
+        <Text>Enter Kiosk Mode{'\n'}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => Kiosk.exitFullscreen()}>
+        <Text>Exit Kiosk Mode</Text>
+      </TouchableOpacity>
     </View>
   );
 }
