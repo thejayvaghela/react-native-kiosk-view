@@ -1,6 +1,8 @@
 # react-native-kiosk-view
 
-PACKAGE DISCRIPTION HERE
+A simple kiosk mode for Android in react native.
+
+Does not work with Expo because of its native dependencies.
 
 ## Installation
 
@@ -8,14 +10,98 @@ PACKAGE DISCRIPTION HERE
 npm install react-native-kiosk-view
 ```
 
+## Android Changes
+
+In `MainActivity.java` add the following code:
+
+```java
+//...
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import com.kioskview.Immersive;
+
+public class MainActivity extends ReactActivity {
+  //...
+  @Override
+  public void onBackPressed() {
+		if( !Immersive.getActive() ) super.onBackPressed();
+		else Immersive.fullscreen(getWindow(), MainActivity.this);
+  }
+
+  @Override
+  protected void onPause() {
+		super.onPause();
+		if(Immersive.getActive()) Immersive.moveToFront(getTaskId(),(ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
+  }
+
+  @Override
+  protected void onResume() {
+		super.onResume();
+		if(Immersive.getActive()) Immersive.fullscreen(getWindow(), MainActivity.this);
+  }
+
+  @Override
+  protected void onUserLeaveHint() {
+		super.onUserLeaveHint();
+		if(Immersive.getActive()) {
+			Immersive.moveToFront(getTaskId(), (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE));
+			Immersive.fullscreen(getWindow(), MainActivity.this);
+		}
+  }
+}
+```
+
+Add below permissions in `AndroidManifest.xml:`
+
+```xml
+<uses-permission android:name="android.permission.REORDER_TASKS" />
+<uses-permission android:name="android.permission.BROADCAST_CLOSE_SYSTEM_DIALOGS" />
+```
+
+The `<intent-filter>` should be atleast:
+
+```xml
+<intent-filter>
+  <action android:name="android.intent.action.MAIN" />
+  <category android:name="android.intent.category.HOME" />
+  <category android:name="android.intent.category.LAUNCHER" />
+</intent-filter>
+```
+
 ## Usage
 
-```js
-import { multiply } from 'react-native-kiosk-view';
+```ts
+import * as React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Kiosk from 'react-native-kiosk-view';
 
-// ...
+export default function App() {
+  const handleFullScreen = () => Kiosk.fullscreen();
 
-const result = await multiply(3, 7);
+  const handleExitFullScreen = () => Kiosk.exitFullscreen();
+
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={handleFullScreen}>
+        <Text>Enter Kiosk Mode{'\n'}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handleExitFullScreen}>
+        <Text>Exit Kiosk Mode</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 ```
 
 ## Contributing

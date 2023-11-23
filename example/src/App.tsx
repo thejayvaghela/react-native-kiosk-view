@@ -1,16 +1,19 @@
 import * as React from 'react';
-
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Kiosk from 'react-native-kiosk-view';
 
 export default function App() {
+  const handleFullScreen = () => Kiosk.fullscreen();
+
+  const handleExitFullScreen = () => Kiosk.exitFullscreen();
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => Kiosk.fullscreen()}>
+      <TouchableOpacity onPress={handleFullScreen}>
         <Text>Enter Kiosk Mode{'\n'}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => Kiosk.exitFullscreen()}>
+      <TouchableOpacity onPress={handleExitFullScreen}>
         <Text>Exit Kiosk Mode</Text>
       </TouchableOpacity>
     </View>
@@ -22,10 +25,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
   },
 });
